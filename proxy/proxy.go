@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"log"
 	"net"
+	"strconv"
 )
 
 // Server is a TCP server that takes an incoming request and sends it to another
@@ -40,6 +41,8 @@ type Server struct {
 	BuffSize int
 
 	EncodeBuffSize int
+
+	Debug bool
 }
 
 // ListenAndServe listens on the TCP network address laddr and then handle packets
@@ -111,23 +114,32 @@ func (s *Server) handleConn(conn net.Conn) {
 				log.Println(err)
 				return
 			}
-			//log.Println(">>>>>>>>>>>>>>>>>接收消息>>>>>>>>>>>>>>>>>>>>>")
-			//log.Println("input byte (" + strconv.Itoa(n) + ") : " + string(buff))
+			if s.Debug {
+				log.Println(">>>>>>>>>>>>>>>>>接收消息>>>>>>>>>>>>>>>>>>>>>")
+				log.Println("input byte (" + strconv.Itoa(n) + ") : " + string(buff))
+			}
 			b := buff[:n]
 			if encrypt {
 				b,_ = crypto.DesEncryption(s.DESKey, s.DESIv, buff[:n])
-				//log.Println("1111111111111111111111加密转发1111111111111111111, len " + strconv.Itoa(len(b)))
-				//log.Println("Encrypt byte (" + strconv.Itoa(len(b)) + ") : " + string(b))
+				if s.Debug {
+					log.Println("1111111111111111111111加密转发1111111111111111111, len " + strconv.Itoa(len(b)))
+					log.Println("Encrypt byte (" + strconv.Itoa(len(b)) + ") : " + string(b))
+				}
 			}
 			if decrypt {
 				b,_ = crypto.DesDecryption(s.DESKey, s.DESIv, b)
-				//log.Println("222222222222222222222解密回传222222222222222222222")
-				//log.Println("Decrypt byte (" + strconv.Itoa(len(b)) + ") : " + string(b))
+				if s.Debug {
+					log.Println("222222222222222222222解密回传222222222222222222222")
+					log.Println("Decrypt byte (" + strconv.Itoa(len(b)) + ") : " + string(b))
+				}
 			}
-			//log.Println("<<<<<<<<<<<<<<<<<<<结束<<<<<<<<<<<<<<<<<<<<<<")
-			//log.Println(".")
-			//log.Println("..")
-			//log.Println("...")
+
+			if s.Debug {
+				log.Println("<<<<<<<<<<<<<<<<<<<结束<<<<<<<<<<<<<<<<<<<<<<")
+				log.Println(".")
+				log.Println("..")
+				log.Println("...")
+			}
 
 			if filter != nil {
 				filter(&b)

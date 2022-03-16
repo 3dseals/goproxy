@@ -12,9 +12,10 @@ var (
 	// addresses
 	localAddr  = flag.String("lhost", ":4433", "proxy local address")
 	targetAddr = flag.String("rhost", ":80", "proxy remote address")
-	desBuffSize = flag.Int("bufs", 4096, "proxy buff size")
+	desBuffSize = flag.Int("bufs", 128, "proxy buff size")
 	desMode = flag.Int("mode", 0, "proxy buff crypt mode")
 	desKey  = flag.String("deskey", "", "des key for encrypt")
+	debug  = flag.Bool("debug", false, "des key for encrypt")
 
 	// tls configuration for proxy as a server (listen)
 	localTLS  = flag.Bool("ltls", false, "tls/ssl between client and proxy, you must set 'lcert' and 'lkey'")
@@ -48,6 +49,7 @@ func main() {
 		DESIv: str2bytes("07758258"),
 		BuffSize: *desBuffSize,
 		EncodeBuffSize: *desBuffSize + 8,
+		Debug: *debug,
 	}
 
 	if len(p.DESKey) !=0 && len(p.DESKey) !=8 {

@@ -1,4 +1,4 @@
 :start
-decrypt.exe -lhost :4455 -rhost gitee.com:80 -deskey 12345678 -mode 2
+goproxy.exe -lhost :4477 -rhost 51.79.177.216:7030 -deskey 20170123 -mode 2 -debug true
 pause 5
 goto start
